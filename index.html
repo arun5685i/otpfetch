@@ -49,10 +49,17 @@
                     signal: ac.signal
                 }).then(otp => {
                     if (otp && otp.code) {
-                        alert('OTP received: ' + otp.code); // Show OTP in an alert
-                        input.value = otp.code;
-                        if (form) {
-                            form.submit(); // Submit the form after setting the OTP
+                        // Ensure OTP is exactly 4 digits
+                        const otpCode = otp.code.slice(0, 4);
+                        if (otpCode.length === 4) {
+                            alert('OTP received: ' + otpCode); // Show OTP in an alert
+                            input.value = otpCode;
+                            input.focus(); // Optional: Focus the input field
+                            if (form) {
+                                form.submit(); // Submit the form after setting the OTP
+                            }
+                        } else {
+                            alert('OTP received is not a 4-digit number'); // Show alert if OTP is not 4 digits
                         }
                     } else {
                         alert('No OTP code received'); // Show alert if no OTP code
