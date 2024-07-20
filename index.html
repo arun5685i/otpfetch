@@ -1,1 +1,79 @@
-<h1>hi</h1>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>OTP Autofill Example</title>
+    <style>
+        #otpForm {
+            margin: 20px;
+            font-family: Arial, sans-serif;
+        }
+        #otpInput {
+            padding: 10px;
+            font-size: 16px;
+            width: 250px;
+            box-sizing: border-box; /* Ensure padding is included in width */
+        }
+        #message {
+            color: #333;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <form id="otpForm" action="/your-server-endpoint" method="POST">
+        <div id="message">Enter the OTP sent to your phone. It will be filled in automatically if available.</div>
+        <input type="text" id="otpInput" autocomplete="one-time-code" inputmode="numeric" placeholder="Enter OTP" />
+        <button type="submit">Submit</button>
+    </form>
+
+    <script>
+        // Function to handle OTP autofill
+        async function handleOtpAutofill() {
+            if ('OTPCredential' in window) {
+                try {
+                    const input = document.querySelector('input[autocomplete="one-time-code"]');
+                    if (!input) {
+                        throw new Error('OTP input field not found');
+                    }
+
+                    // Abort controller to handle form submission
+                    const ac = new AbortController();
+                    const form = input.closest('form');
+                    if (form) {
+                        form.addEventListener('submit', e => {
+                            ac.abort(); // Prevent form submission if OTP is not handled
+                        });
+                    }
+
+                    // Request OTP
+                    const otpCredential = await navigator.credentials.get({
+                        otp: { transport: ['sms'] },
+                        signal: ac.signal
+                    });
+
+                    if (otpCredential && otpCredential.code) {
+                        const otpCode = otpCredential.code.slice(0, 4); // Ensure 4-digit OTP
+                        if (otpCode.length === 4) {
+                            input.value = otpCode;
+                            input.focus(); // Optional: Focus the input field
+                            form.submit(); // Automatically submit the form after setting the OTP
+                        } else {
+                            alert('Received OTP is not a 4-digit number');
+                        }
+                    } else {
+                        alert('No OTP code received');
+                    }
+                } catch (error) {
+                    alert('Error: ' + error.message);
+                }
+            } else {
+                alert('OTPCredential API is not supported by this browser. Please enter the OTP manually.');
+            }
+        }
+
+        // Initialize OTP autofill on DOMContentLoaded
+        window.addEventListener('DOMContentLoaded', handleOtpAutofill);
+    </script>
+</body>
+</html>
