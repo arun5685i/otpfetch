@@ -2,9 +2,27 @@
 <html>
 <head>
     <title>OTP Autofill Example</title>
+    <style>
+        /* Style to make the input field and message more visible */
+        #otpForm {
+            margin: 20px;
+            font-family: Arial, sans-serif;
+        }
+        #otpInput {
+            padding: 10px;
+            font-size: 16px;
+            width: 250px;
+        }
+        #message {
+            color: #333;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+    </style>
 </head>
 <body>
     <form id="otpForm">
+        <div id="message">Enter the OTP sent to your phone. It will be filled in automatically.</div>
         <input type="text" id="otpInput" autocomplete="one-time-code" inputmode="numeric" placeholder="Enter OTP" />
         <button type="submit">Submit</button>
     </form>
