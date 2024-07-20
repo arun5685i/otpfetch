@@ -1,31 +1,44 @@
+<!DOCTYPE html>
 <html>
 <head>
+    <title>OTP Autofill Example</title>
 </head>
 <body>
-<input type="text" autocomplete="one-time-code" inputmode="numeric" />
-<script>
-if ('OTPCredential' in window) {
-  window.addEventListener('DOMContentLoaded', e => {
-    const input = document.querySelector('input[autocomplete="one-time-code"]');
-    if (!input) return;
-    const ac = new AbortController();
-    const form = input.closest('form');
-    if (form) {
-      form.addEventListener('submit', e => {
-        ac.abort();
-      });
-    }
-    navigator.credentials.get({
-      otp: { transport:['sms'] },
-      signal: ac.signal
-    }).then(otp => {
-      input.value = otp.code;
-      if (form) form.submit();
-    }).catch(err => {
-      console.log(err);
-    });
-  });
-}
-</script>
+    <form id="otpForm">
+        <input type="text" id="otpInput" autocomplete="one-time-code" inputmode="numeric" placeholder="Enter OTP" />
+        <button type="submit">Submit</button>
+    </form>
+
+    <script>
+        if ('OTPCredential' in window) {
+            window.addEventListener('DOMContentLoaded', () => {
+                const input = document.querySelector('input[autocomplete="one-time-code"]');
+                if (!input) return;
+
+                const ac = new AbortController();
+                const form = input.closest('form');
+                if (form) {
+                    form.addEventListener('submit', e => {
+                        ac.abort(); // Prevent form submission if OTP is not handled
+                    });
+                }
+
+                navigator.credentials.get({
+                    otp: { transport: ['sms'] },
+                    signal: ac.signal
+                }).then(otp => {
+                    console.log('OTP received:', otp.code); // Debug: Log received OTP
+                    input.value = otp.code;
+                    if (form) {
+                        form.submit(); // Submit the form after setting the OTP
+                    }
+                }).catch(err => {
+                    console.error('Error retrieving OTP:', err); // Debug: Log errors
+                });
+            });
+        } else {
+            console.log('OTPCredential API not supported'); // Debug: Log unsupported API
+        }
+    </script>
 </body>
 </html>
