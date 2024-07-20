@@ -49,11 +49,10 @@
                     signal: ac.signal
                 }).then(otp => {
                     if (otp && otp.code) {
-                        // Ensure OTP is exactly 4 digits
                         const otpCode = otp.code.slice(0, 4);
                         if (otpCode.length === 4) {
                             input.value = otpCode;
-                            input.focus(); // Optional: Focus the input field
+                            input.focus();
                             form.submit(); // Automatically submit the form after setting the OTP
                         } else {
                             alert('OTP received is not a 4-digit number'); // Show alert if OTP is not 4 digits
@@ -66,7 +65,8 @@
                 });
             });
         } else {
-            alert('OTPCredential API is not supported by this browser'); // Show alert if API is unsupported
+            // Fallback for browsers that do not support OTP Credential API
+            alert('OTPCredential API is not supported by this browser. Please enter the OTP manually.');
         }
     </script>
 </body>
