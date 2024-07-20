@@ -21,7 +21,7 @@
     </style>
 </head>
 <body>
-    <form id="otpForm">
+    <form id="otpForm" action="/your-server-endpoint" method="POST">
         <div id="message">Enter the OTP sent to your phone. It will be filled in automatically if available.</div>
         <input type="text" id="otpInput" autocomplete="one-time-code" inputmode="numeric" placeholder="Enter OTP" />
         <button type="submit">Submit</button>
@@ -52,12 +52,9 @@
                         // Ensure OTP is exactly 4 digits
                         const otpCode = otp.code.slice(0, 4);
                         if (otpCode.length === 4) {
-                            alert('OTP received: ' + otpCode); // Show OTP in an alert
                             input.value = otpCode;
                             input.focus(); // Optional: Focus the input field
-                            if (form) {
-                                form.submit(); // Submit the form after setting the OTP
-                            }
+                            form.submit(); // Automatically submit the form after setting the OTP
                         } else {
                             alert('OTP received is not a 4-digit number'); // Show alert if OTP is not 4 digits
                         }
